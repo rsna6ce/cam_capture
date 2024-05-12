@@ -29,12 +29,12 @@ $  sudo gpasswd -a $USER video
 $ cd cam_capture/web_app
 $ sudo apt install python3-pip
 $ pip3 install -r requirements.txt
-$ sudo apt install v4l-utils
 ```
 
-### install ffmpeg environment
+### install ffmpeg and uvc environment
 ```
 $ sudo apt install ffmpeg
+$ sudo apt install v4l-utils
 ```
 
 ### setup crontab
@@ -58,3 +58,8 @@ $ ls /dev/video*
 $ sudo apt install v4l-utils
 $ v4l2-ctl --list-formats-ext
 ```
+
+### Connect from Client
+* Access the IP address of the server in your web browser
+* Set a browser bookmark recommended
+* http://(server-ip-address):50002
