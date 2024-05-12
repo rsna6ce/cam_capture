@@ -50,6 +50,6 @@ def video_download():
     response = make_response()
     response.data = open(video_basedir+'/'+filename, "rb").read()
     response.headers['Content-Disposition'] = 'attachment; filename=' + filename
-    response.mimetype = 'video/webm'
+    response.mimetype = 'video/x-matroska'
     return response
 
