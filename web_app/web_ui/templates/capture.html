@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="border rounded w-100" style="padding:5px;">
+    <label>Camera : {{current_camera}}</label>
+    <div class="form-group" style="padding:5px;padding-bottom:0px;">
+        <form action="{{ url_for('capture_trigger') }}" method=post name="capture_trigger" onsubmit="return confirm_trigger()">
+            <div class="row" style="padding:0px;padding-bottom:0px;">
+                <div class="col-6" style="padding:10px;padding-bottom:0px;">
+                    <button {{start_enable}} type="submit" class="btn btn-primary w-100 h-100" name="trigger" value="start" id="button_start">
+                        <span>Start</span>
+                    </button>
+                </div>
+                <div class="col-6" style="padding:10px;padding-bottom:0px;">
+                    <button {{stop_enable}} type="submit" class="btn btn-primary w-100 h-100" name="trigger" value="stop" id="button_stop">
+                        <span>Stop</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br>
+<img src="" id="preview" class="img-fluid mx-auto d-block">
+
+
+<script language="javascript" type="text/javascript">
+    function set_img_reload() {
+        let elem = document.getElementById('preview')
+        elem.addEventListener('load', (e)=> {
+            let cache_busting = new Date().getTime();
+            elem.src = "{{ url_for('preview_camera') }}" + "?" + cache_busting;
+        });
+        let cache_busting = new Date().getTime();
+        elem.src = "{{ url_for('preview_camera') }}" + "?" + cache_busting;
+    }
+
+    function confirm_trigger() {
+        let msg = '{{capture_running}}'=='True' ? 'Stop ' : 'Start ';
+        let result = window.confirm(msg + 'OK ?');
+        return result;
+    }
+
+    function load() {
+      //UpdateStatusPoling();
+      set_img_reload();
+    }
+    window.onload = load;
+</script>
+
+{% endblock %}
