@@ -7,7 +7,7 @@
         <div class="row" style="padding:10px;">
             <div class="col-12" style="padding:10px;padding-top:0px;padding-bottom:0px;">
                 <label class="label">Captured videos :&ensp;</label>
-                <select id="videos_file" name="videos_file" class="form-control">
+                <select id="videos_file" name="videos_file" class="form-control" onclick="reload_preview_video();">
                     {% for videos_file in videos_files %}
                         <option value={{videos_file}}  {{ 'selected' if videos_file == selected_file else '' }}>{{videos_file}}</option>
                     {% endfor %}
@@ -29,7 +29,15 @@
         </form>
     </div>
 </div>
+<img src="" id="preview" class="img-fluid mx-auto d-block">
+
 <script language="javascript" type="text/javascript">
+    function reload_preview_video() {
+        const elem_video = document.getElementById("videos_file");
+        const filename = elem_video.value;
+        let elem_image = document.getElementById("preview");
+        elem_image.src = "{{url_for('preview_video')}}" + "?filename=" + filename
+    }
     function confirm_trigger(msg) {
         let result = window.confirm(msg + 'OK ?');
         return result;
@@ -44,6 +52,7 @@
         link.click()
     };
     function load() {
+        reload_preview_video();
     }
     window.onload = load;
 </script>

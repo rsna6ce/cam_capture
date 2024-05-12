@@ -41,6 +41,25 @@ def video_trigger():
         os.remove(video_basedir+'/'+videos_file)
     return redirect(url_for('video'))
 
+@app.route('/video/preview', methods=['GET'])
+def preview_video():
+    video_basedir = web_ui_path + '/../captured/videos/'
+    filename = request.args.get('filename','')
+    filepath = video_basedir + filename
+    if not os.path.exists(filepath):
+        return ''
+    # decode first frame
+    cap = cv2.VideoCapture(filepath)
+    ret, img = cap.read()
+    cap.release()
+
+    ret, jpeg = cv2.imencode('.jpg', img)
+    response = make_response(jpeg.tobytes())
+    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set('Accept-Ranges', 'bytes')
+    response.headers.set('Cache-Control', 'public, max-age=60')
+    return response
+
 @app.route('/video/download', methods=['GET'])
 def video_download():
     filename = request.args.get('filename','')
