@@ -24,6 +24,18 @@
 <br>
 <img src="" id="preview" class="img-fluid mx-auto d-block">
 
+    {% if exposure_enable %}
+    <div class="row" style="padding:0px;padding-bottom:0px;padding-left:5px;">
+         <div class="col-2" style="padding:10px;padding-bottom:0px;">
+            <input type="checkbox" id="manual_exposure" onclick="set_exposure()" {% if exposure['auto_exposure']['value']=='1' %} checked {% endif %}/>
+            <label for="manual_exposure">Set exposure </label>
+         </div>
+         <div class="col-10" style="padding:10px;padding-bottom:0px;">
+            <input type="number" id="exposure_time_absolute"  onchange="set_exposure()" min="{{exposure['exposure_time_absolute']['min']}}" max="{{exposure['exposure_time_absolute']['max']}}" value="{{exposure['exposure_time_absolute']['value']}}"/>
+            <label for="exposure_time_absolute">x 0.1ms (default:{{exposure['exposure_time_absolute']['default']}})</label>
+         </div>
+    </div>
+    {% endif %}
 
 <script language="javascript" type="text/javascript">
     function set_img_reload() {
@@ -34,6 +46,26 @@
         });
         let cache_busting = new Date().getTime();
         elem.src = "{{ url_for('preview_camera') }}" + "?" + cache_busting;
+    }
+
+    function set_exposure() {
+        let manual_exposure = document.getElementById('manual_exposure');
+        let auto_exposure_mode = manual_exposure.checked ? '1' : '3';
+        let exposure_time_absolute = document.getElementById('exposure_time_absolute');
+        exposure_time = exposure_time_absolute.value;
+        let request = new XMLHttpRequest();
+        request.open('GET', "{{url_for('set_exposure')}}?auto=" + auto_exposure_mode + "&time=" + exposure_time, true);
+        request.responseType = 'json';
+        request.onload = function () {
+            let data = this.response;
+            if (data.result!='OK') {
+                alert(data.result + '\n' + data.reason)
+            }
+        };
+        request.onerror = function () {
+            alert('ERROR: failed set exposure.');
+        }
+        request.send();
     }
 
     function confirm_trigger() {

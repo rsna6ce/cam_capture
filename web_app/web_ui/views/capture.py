@@ -22,11 +22,23 @@ def capture():
         return redirect(url_for('menu'))
     start_enable = 'disabled' if inner_status.capture_running else ''
     stop_enable = '' if inner_status.capture_running else 'disabled'
+    exposure_enable = False
+    camera_info = inner_status.current_camera.split(' ')
+    dev_name = camera_info[0]
+    exposure_params = camera_control.get_cam_exposure()
+    exposure={}
+    for exposure_param in exposure_params:
+        param = exposure_param.get(dev_name)
+        if param:
+            exposure_enable = True
+            exposure = param
+            break
     return render_template(
         'capture.html', navi_title="capture",
         capture_running=inner_status.capture_running,
         current_camera=inner_status.current_camera,
-        start_enable=start_enable, stop_enable=stop_enable)
+        start_enable=start_enable, stop_enable=stop_enable,
+        exposure_enable=exposure_enable, exposure=exposure)
 
 @app.route('/set_camera')
 def set_camera():
@@ -34,6 +46,18 @@ def set_camera():
         return jsonify({'result':'ERROR', 'reason':'capture running'})
     cam = request.args.get('cam','')
     inner_status.current_camera = cam
+    return jsonify({'result':'OK', 'reason':''})
+
+@app.route('/set_exposure')
+def set_exposure():
+    if inner_status.capture_running:
+        return jsonify({'result':'ERROR', 'reason':'capture running'})
+    camera_info = inner_status.current_camera.split(' ')
+    dev_name = camera_info[0]
+    auto = request.args.get('auto','')
+    time = request.args.get('time','')
+    with camera_control_lock:
+        camera_control.set_cam_exposure(dev_name, auto, time)
     return jsonify({'result':'OK', 'reason':''})
 
 @app.route("/preview_camera")
