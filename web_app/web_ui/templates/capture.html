@@ -31,7 +31,7 @@
             <label for="manual_exposure">Set exposure </label>
          </div>
          <div class="col-10" style="padding:10px;padding-bottom:0px;">
-            <input type="number" id="exposure_time_absolute"  onchange="set_exposure()" min="{{exposure['exposure_time_absolute']['min']}}" max="{{exposure['exposure_time_absolute']['max']}}" value="{{exposure['exposure_time_absolute']['value']}}"/>
+            <input type="number" id="exposure_time_absolute"  onchange="set_exposure()" onclick="set_exposure()" min="{{exposure['exposure_time_absolute']['min']}}" max="{{exposure['exposure_time_absolute']['max']}}" value="{{exposure['exposure_time_absolute']['value']}}"/>
             <label for="exposure_time_absolute">x 0.1ms (default:{{exposure['exposure_time_absolute']['default']}})</label>
          </div>
     </div>
